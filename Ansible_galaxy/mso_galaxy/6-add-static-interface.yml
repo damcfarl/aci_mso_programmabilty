@@ -1,0 +1,40 @@
+---
+
+  - name: Add static port
+    hosts: mso1
+    connection: local
+    gather_facts: no
+
+    vars_files:
+    - external_vars.yml
+
+    vars:
+      status: present
+
+    tasks:
+    - name: Add a new static port to a site EPG
+      cisco.mso.mso_schema_site_anp_epg_staticport:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ pass }}"
+        schema: "{{ schema }}"
+        site: "{{ site2 }}"
+        template: "{{ template }}"
+        anp: "Ansible-ANP"
+        epg: "{{ epg }}"
+        type: "port"
+        pod: "pod-1"
+        leaf: "102"
+        path: "eth1/1"
+        vlan: "126"
+        deployment_immediacy: immediate
+        state: "{{ status }}"
+        validate_certs: no
+      delegate_to: localhost
+
+
+#
+# Usage:  ansible-playbook -i hosts 6-add-static-interface.yml   -vvv
+#
+#  docs.ansible.com is essential to make sure you got the modules right
+# variables are defined in external_varsATX.yml

@@ -1,0 +1,166 @@
+#############################################################################
+#                                                                              #
+#  Ansible example to read a csv file as input to ACI methods                  #
+#  In this example, row_index is used for the loop counter                     #
+#  row_index is an arbitrary name and is prepended to the                      #
+#  variable names in the csv file in the tasks                                 #
+#                                                                              #
+#  Sample csv file "aci_config.csv"                                            #
+#  tenant,app,epg,bridgedomain,gateway,mask,mac,status,vrf                     #
+#  dm_loop,MyApp,web,BD-web,192.168.10.254,24,00:22:BD:F8:19:FF,created,Prod   #
+#  dm_loop,MyApp,db,BD-db,192.168.11.254,24,00:22:BD:F8:19:FF,created,Prod     #
+#  dm_loop,MyApp,app,BD-app,192.168.12.254,24,00:22:BD:F8:19:FF,created,Prod   #
+#                                                                              #
+#  Dave McFarland                                                              #
+#                                                                              #
+#############################################################################
+#                                                                              #
+# Copyright (c) 2020 Cisco Systems                                             #
+# All Rights Reserved.                                                         #
+#                                                                              #
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may   #
+#    not use this file except in compliance with the License. You may obtain   #
+#    a copy of the License at                                                  #
+#                                                                              #
+#         http://www.apache.org/licenses/LICENSE-2.0                           #
+#                                                                              #
+#    Unless required by applicable law or agreed to in writing, software       #
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT #
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the  #
+#    License for the specific language governing permissions and limitations   #
+#    under the License.                                                        #
+#                                                                              #
+################################################################################
+---
+- name: Create 3-Tier Tenant Ansible_Loop sourcing csv file
+  hosts: apics
+  connection: local
+  gather_facts:  false
+
+  vars_files:
+    - external_vars.yml
+
+  tasks:
+    - name: "Reading Tenant information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name:  "Creating Tenant"
+      cisco.aci.aci_tenant:
+        tenant:  "{{ row_index.tenant }}"
+        description: "Ansible Loop CSV Tenant {{ row_index.tenant }}"
+        host:  "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+
+    - name: "Reading VRF information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name: "Creating VRF"
+      cisco.aci.aci_vrf:
+        tenant: "{{ row_index.tenant }}"
+        vrf_name: "{{ row_index.vrf }}"
+        description: "VRF {{ row_index.vrf }}"
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+
+    - name: "Reading BD VRF information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name: "Create a Bridge Domain"
+      cisco.aci.aci_bd:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        tenant: "{{ row_index.tenant }}"
+        vrf_name: "{{ row_index.vrf }}"
+        bd: "{{ row_index.bridgedomain }}"
+        description: "Bridge Domain {{ row_index.bridgedomain }}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+
+    - name: "Reading BD Gateway Mask information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name: "Create a subnet mask"
+      cisco.aci.aci_bd_subnet:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        tenant: "{{ row_index.tenant }}"
+        bd: "{{ row_index.bridgedomain }}"
+        gateway: "{{ row_index.gateway }}"
+        mask: "{{ row_index.mask }}"
+        description: "GW-Mask {{ row_index.gateway }} {{row_index.mask}}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+    - name: "Reading APP information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name: "Add a new AP"
+      cisco.aci.aci_ap:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        tenant: "{{ row_index.tenant }}"
+        ap: "{{ row_index.app }}"
+        description: "ANP {{ row_index.app }}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+
+    - name: "Reading EPG information"
+      read_csv:
+        path: aci_config.csv
+      register: aci_config
+    - name: "Create EPGs"
+      cisco.aci.aci_epg:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ aci_password }}"
+        validate_certs: "{{ aci_validate_certs }}"
+        tenant: "{{ row_index.tenant }}"
+        ap: "{{ row_index.app }}"
+        epg: "{{ row_index.epg }}"
+        bd: "{{ row_index.bridgedomain }}"
+        description: "EPG {{ row_index.epg }}"
+        state: "{{ row_index.state }}"
+      loop: "{{ aci_config.list }}"
+      loop_control:
+        loop_var: row_index
+
+
+# Created by damcfarl
+#
+# Usage:  ansible-playbook ansible_loop.yml -i Inventory-file  -vvv
+#
+#  docs.ansible.com is essential to make sure you got the modules right
+# variables are defined in external_vars.yml

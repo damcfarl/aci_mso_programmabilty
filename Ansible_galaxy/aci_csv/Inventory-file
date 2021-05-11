@@ -1,0 +1,6 @@
+[apics]
+#sandboxapicdc.cisco.com
+10.122.143.36 username=damcfarl password=cisco!123
+
+[vcenter]
+vcenter1

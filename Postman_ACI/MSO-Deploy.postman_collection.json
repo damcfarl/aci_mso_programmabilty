@@ -1,0 +1,560 @@
+{
+	"info": {
+		"_postman_id": "1e80ec27-b42c-4adf-be58-ce771a28d41e",
+		"name": "MSO-Deploy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Archive",
+			"item": [
+				{
+					"name": "91-Delete Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}tenants/{{tenant_id}}?msc-only=false",
+							"host": [
+								"{{url}}tenants"
+							],
+							"path": [
+								"{{tenant_id}}"
+							],
+							"query": [
+								{
+									"key": "msc-only",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tenants",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var jsonData = JSON.parse(responseBody);",
+									"var myUser = \"dev2232-user\"+pm.environment.get(\"msoUser\");",
+									"",
+									"jsonData.users.forEach(function(users) {",
+									"    if (users.username == myUser) {",
+									"        postman.setEnvironmentVariable(\"userID\", users.id);",
+									"    }",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}tenants",
+							"host": [
+								"{{url}}tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"var jsonData = JSON.parse(responseBody);",
+									"var myUser = \"dev2232-user\"+pm.environment.get(\"msoUser\");",
+									"",
+									"jsonData.users.forEach(function(users) {",
+									"    if (users.username == myUser) {",
+									"        postman.setEnvironmentVariable(\"userID\", users.id);",
+									"    }",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}users",
+							"host": [
+								"{{url}}users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{msoUser}}\",\n    \"password\": \"{{msoPWD}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}auth/login",
+					"host": [
+						"{{url}}auth"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{msoUser}}\",\n    \"password\": \"{{msoPWD}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}auth/login",
+					"host": [
+						"{{url}}auth"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Sites",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"jsonData.sites.forEach(function(site) {",
+							"    if (site.name == \"SanFrancisco\") {",
+							"        postman.setEnvironmentVariable(\"site1_id\", jsonData.sites[0].id);",
+							"    } else if (site.name == \"NewYork\") {",
+							"        postman.setEnvironmentVariable(\"site2_id\", jsonData.sites[1].id);",
+							"    }",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roles\": [\r\n        {\r\n            \"id\": \"0000ffff0000000000000031\",\r\n            \"name\": \"powerUser\",\r\n            \"displayName\": \"Power User\",\r\n            \"description\": \"Elevates this user to \\\"admin\\\"\",\r\n            \"readPermissions\": [\r\n                \"view-sites\",\r\n                \"view-tenants\",\r\n                \"view-schemas\",\r\n                \"view-tenant-schemas\",\r\n                \"view-users\",\r\n                \"view-roles\",\r\n                \"view-all-audit-records\",\r\n                \"view-backup\",\r\n                \"view-labels\",\r\n                \"manage-system\"\r\n            ],\r\n            \"writePermissions\": [\r\n                \"manage-sites\",\r\n                \"manage-tenants\",\r\n                \"manage-labels\",\r\n                \"manage-schemas\",\r\n                \"manage-tenant-schemas\",\r\n                \"manage-users\",\r\n                \"manage-roles\",\r\n                \"manage-audit-records\",\r\n                \"manage-backup\",\r\n                \"manage-labels\",\r\n                \"manage-system\"\r\n            ],\r\n            \"permissions\": [\r\n                \"view-sites\",\r\n                \"view-tenants\",\r\n                \"view-schemas\",\r\n                \"view-tenant-schemas\",\r\n                \"view-users\",\r\n                \"view-roles\",\r\n                \"view-all-audit-records\",\r\n                \"view-backup\",\r\n                \"view-labels\",\r\n                \"manage-system\",\r\n                \"manage-sites\",\r\n                \"manage-tenants\",\r\n                \"manage-labels\",\r\n                \"manage-schemas\",\r\n                \"manage-tenant-schemas\",\r\n                \"manage-users\",\r\n                \"manage-roles\",\r\n                \"manage-audit-records\",\r\n                \"manage-backup\",\r\n                \"manage-labels\",\r\n                \"manage-system\"\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"0000ffff0000000000000032\",\r\n            \"name\": \"siteManager\",\r\n            \"displayName\": \"Site and Tenant Manager\",\r\n            \"description\": \"Manage sites, tenants and associations\",\r\n            \"readPermissions\": [\r\n                \"view-sites\",\r\n                \"view-tenants\",\r\n                \"view-labels\"\r\n            ],\r\n            \"writePermissions\": [\r\n                \"manage-sites\",\r\n                \"manage-tenants\",\r\n                \"manage-labels\"\r\n            ],\r\n            \"permissions\": [\r\n                \"view-sites\",\r\n                \"view-tenants\",\r\n                \"view-labels\",\r\n                \"manage-sites\",\r\n                \"manage-tenants\",\r\n                \"manage-labels\"\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"0000ffff0000000000000033\",\r\n            \"name\": \"schemaManager\",\r\n            \"displayName\": \"Schema Manager\",\r\n            \"description\": \"Manage all schemas regardless of tenant association\",\r\n            \"readPermissions\": [\r\n                \"view-schemas\"\r\n            ],\r\n            \"writePermissions\": [\r\n                \"manage-schemas\"\r\n            ],\r\n            \"permissions\": [\r\n                \"view-schemas\",\r\n                \"manage-schemas\"\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"0000ffff0000000000000034\",\r\n            \"name\": \"schemaEditor\",\r\n            \"displayName\": \"Schema Manager - Restricted\",\r\n            \"description\": \"Manage schemas that contain tenants to which a user is explicitly associated\",\r\n            \"readPermissions\": [\r\n                \"view-tenant-schemas\"\r\n            ],\r\n            \"writePermissions\": [\r\n                \"manage-tenant-schemas\"\r\n            ],\r\n            \"permissions\": [\r\n                \"view-tenant-schemas\",\r\n                \"manage-tenant-schemas\"\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"0000ffff0000000000000035\",\r\n            \"name\": \"userManager\",\r\n            \"displayName\": \"User and Role Manager\",\r\n            \"description\": \"Manage all users, their roles and passwords\",\r\n            \"readPermissions\": [\r\n                \"view-users\",\r\n                \"view-roles\"\r\n            ],\r\n            \"writePermissions\": [\r\n                \"manage-users\",\r\n                \"manage-roles\"\r\n            ],\r\n            \"permissions\": [\r\n                \"view-users\",\r\n                \"view-roles\",\r\n                \"manage-users\",\r\n                \"manage-roles\"\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}sites",
+					"host": [
+						"{{url}}sites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Sites Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"jsonData.sites.forEach(function(site) {",
+							"    if (site.name == \"SanFrancisco\") {",
+							"        postman.setEnvironmentVariable(\"site1_id\", jsonData.sites[0].id);",
+							"    } else if (site.name == \"NewYork\") {",
+							"        postman.setEnvironmentVariable(\"site2_id\", jsonData.sites[1].id);",
+							"    }",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}sites",
+					"host": [
+						"{{url}}sites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 201\"] = responseCode.code === 201;",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"tenant_id\", jsonData.id);",
+							"postman.setEnvironmentVariable(\"tenant_name\", jsonData.name);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\": \"Postman-T01-{{msoUser}}\",\n    \"name\": \"Postman-T01-{{msoUser}}\",\n    \"description\": \"ATX06 Postman Lab\",\n    \"siteAssociations\": [\n        {\n            \"siteId\": \"{{site1_id}}\",\n            \"securityDomains\": []\n        },\n        {\n            \"siteId\": \"{{site2_id}}\",\n            \"securityDomains\": []\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{url}}tenants",
+					"host": [
+						"{{url}}tenants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Schema",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 201\"] = responseCode.code === 201;",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"schema_id\", jsonData.id);",
+							"postman.setEnvironmentVariable(\"template_name\", jsonData.templates[0].name);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\": \"Postman-T01-user{{msoUser}}-schema\",\n    \"templates\": [\n        {\n            \"name\": \"Postman-T01-user{{msoUser}}-template\",\n            \"tenantId\": \"{{tenant_id}}\",\n            \"displayName\": \"Postman-T01-user{{msoUser}}-template\",\n            \"anps\": [],\n            \"contracts\": [],\n            \"vrfs\": [],\n            \"bds\": [],\n            \"filters\": [],\n            \"externalEpgs\": [],\n            \"serviceGraphs\": []\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{url}}schemas",
+					"host": [
+						"{{url}}schemas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Existing Template",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"op\": \"replace\",\n        \"path\": \"/templates/{{template_name}}\",\n        \"value\": {\n            \"name\": \"{{template_name}}\",\n            \"displayName\": \"{{template_name}}\",\n            \"tenantId\": \"{{tenant_id}}\",\n            \"anps\": [\n                {\n                    \"name\": \"ATX06-user{{msoUser}}-ap\",\n                    \"displayName\": \"ATX06-user{{msoUser}}-ap\",\n                    \"epgs\": [\n                        {\n                            \"name\": \"ATX06-user{{msoUser}}-epg\",\n                            \"displayName\": \"ATX06-user{{msoUser}}-epg\",\n                            \"proxyArp\": false,\n                            \"bdRef\": {\n                                \"schemaId\": \"{{schema_id}}\",\n                                \"templateName\": \"{{template_name}}\",\n                                \"bdName\": \"ATX06-user{{msoUser}}-bd\"\n                            },\n                            \"vrfRef\": {\n                                \"schemaId\": \"{{schema_id}}\",\n                                \"templateName\": \"{{template_name}}\",\n                                \"vrfName\": \"ATX06-user{{msoUser}}-vrf\"\n                            },\n                            \"selectors\": []\n                        }\n                    ]\n                }\n            ],\n            \"vrfs\": [\n                {\n                    \"name\": \"ATX06-user{{msoUser}}-vrf\",\n                    \"displayName\": \"ATX06-user{{msoUser}}-vrf\",\n                    \"vzAnyProviderContracts\": [],\n                    \"vzAnyConsumerContracts\": []\n                }\n            ],\n            \"bds\": [\n                {\n                    \"name\": \"ATX06-user{{msoUser}}-bd\",\n                    \"displayName\": \"ATX06-user{{msoUser}}-bd\",\n                    \"l2UnknownUnicast\": \"flood\",\n                    \"intersiteBumTrafficAllow\": false,\n                    \"optimizeWanBandwidth\": true,\n                    \"l2Stretch\": false,\n                    \"subnets\": [],\n                    \"vrfRef\": {\n                        \"schemaId\": \"{{schema_id}}\",\n                        \"templateName\": \"{{template_name}}\",\n                        \"vrfName\": \"ATX06-user{{msoUser}}-vrf\"\n                    }\n                }\n            ]\n        }\n    }\n]"
+				},
+				"url": {
+					"raw": "{{url}}schemas/{{schema_id}}",
+					"host": [
+						"{{url}}schemas"
+					],
+					"path": [
+						"{{schema_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Template to Sites",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"op\": \"add\",\n        \"path\": \"/sites/-\",\n        \"value\": {\n            \"siteId\": \"{{site1_id}}\",\n            \"templateName\": \"{{template_name}}\"\n        }\n    },\n    {\n        \"op\": \"add\",\n        \"path\": \"/sites/-\",\n        \"value\": {\n            \"siteId\": \"{{site2_id}}\",\n            \"templateName\": \"{{template_name}}\"\n        }\n    }\n]"
+				},
+				"url": {
+					"raw": "{{url}}schemas/{{schema_id}}",
+					"host": [
+						"{{url}}schemas"
+					],
+					"path": [
+						"{{schema_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}execute/schema/{{schema_id}}/template/{{template_name}}",
+					"host": [
+						"{{url}}execute"
+					],
+					"path": [
+						"schema",
+						"{{schema_id}}",
+						"template",
+						"{{template_name}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put_Interface",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\": \"Ansible_T01_schema\",\n    \"templates\": [\n        {\n            \"name\": \"Ansible_Template_1\",\n            \"tenantId\": \"5f5abbc9320000ff0c2091a1\",\n            \"displayName\": \"Ansible_Template_1\",\n            \"anps\": [\n                {\n                    \"displayName\": \"Ansible-ANP\",\n                    \"name\": \"Ansible-ANP\",\n                    \"anpRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/anps/Ansible-ANP\",\n                    \"epgs\": [\n                        {\n                            \"displayName\": \"Ansible-EPG\",\n                            \"name\": \"Ansible-EPG\",\n                            \"epgRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/anps/Ansible-ANP/epgs/Ansible-EPG\",\n                            \"bdRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/bds/bd1\",\n                            \"vrfRef\": \"\",\n                            \"uSegEpg\": false,\n                            \"preferredGroup\": false,\n                            \"contractRelationships\": [],\n                            \"subnets\": [],\n                            \"uSegAttrs\": [],\n                            \"intraEpg\": \"unenforced\",\n                            \"proxyArp\": false,\n                            \"selectors\": []\n                        }\n                    ]\n                }\n            ],\n            \"contracts\": [],\n            \"vrfs\": [\n                {\n                    \"displayName\": \"vrf1\",\n                    \"name\": \"vrf1\",\n                    \"vrfRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/vrfs/vrf1\",\n                    \"preferredGroup\": false,\n                    \"vzAnyEnabled\": false,\n                    \"vzAnyProviderContracts\": [],\n                    \"vzAnyConsumerContracts\": []\n                }\n            ],\n            \"bds\": [\n                {\n                    \"displayName\": \"bd1\",\n                    \"name\": \"bd1\",\n                    \"bdRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/bds/bd1\",\n                    \"vrfRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/vrfs/vrf1\",\n                    \"l2Stretch\": true,\n                    \"l2UnknownUnicast\": \"proxy\",\n                    \"subnets\": [],\n                    \"dhcpLabel\": null,\n                    \"intersiteBumTrafficAllow\": false\n                }\n            ],\n            \"filters\": [],\n            \"externalEpgs\": [],\n            \"serviceGraphs\": [],\n            \"intersiteL3outs\": []\n        }\n    ],\n    \"sites\": [\n        {\n            \"siteId\": \"5e81eda2ea01000702997a79\",\n            \"templateName\": \"Ansible_Template_1\",\n            \"anps\": [\n                {\n                    \"anpRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/anps/Ansible-ANP\",\n                    \"epgs\": [\n                        {\n                            \"epgRef\": \"/schemas/5f5abbd4320000eb0c2091a2/templates/Ansible_Template_1/anps/Ansible-ANP/epgs/Ansible-EPG\",\n                            \"domainAssociations\": [],\n                            \"staticPorts\": [\n                                {\n                                    \"type\": \"port\",\n                                    \"deploymentImmediacy\": \"lazy\",\n                                    \"mode\": \"regular\",\n                                    \"pod\": \"topology/pod-1\",\n                                    \"leaf\": \"topology/pod-1/node-204\",\n                                    \"path\": \"topology/pod-1/paths-204/pathep-[eth1/13]\",\n                                    \"portEncapVlan\": 1053\n                                }\n                            ],\n                            \"staticLeafs\": [],\n                            \"subnets\": [],\n                            \"selectors\": [],\n                            \"uSegAttrs\": []\n                        }\n                    ]\n                }\n            ]\n        },\n        {\n            \"siteId\": \"5e81ed18ea0100e801997a78\",\n            \"templateName\": \"Ansible_Template_1\"\n        }\n    ],\n    \"_updateVersion\": 10,\n    \"id\": \"5f5abbd4320000eb0c2091a2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://14.2.172.143/mso/api/v1/schemas/5f5abbd4320000eb0c2091a2",
+					"protocol": "https",
+					"host": [
+						"14",
+						"2",
+						"172",
+						"143"
+					],
+					"path": [
+						"mso",
+						"api",
+						"v1",
+						"schemas",
+						"5f5abbd4320000eb0c2091a2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
