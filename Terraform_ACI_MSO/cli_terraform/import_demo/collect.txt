@@ -1,0 +1,2 @@
+terraform import aci_tenant.tenant_tf uni/tn-dm_terraform_import_tenant
+terraform import aci_vrf.vrf_tf uni/tn-dm_terraform_import_tenant/ctx-dm_prod_import_vrf
