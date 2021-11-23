@@ -1,0 +1,7 @@
+alias gs='git status'
+alias gl='git log --all --graph --decorate'
+alias gll='git log --all --graph --decorate --oneline'
+alias tf='/usr/local/bin/terraform'
+alias tp='/usr/local/bin/terraform plan'
+alias ta='/usr/local/bin/terraform apply'
+export PS1='$(whoami):${PWD/*\//}:~$ '

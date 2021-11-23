@@ -1,0 +1,13 @@
+*tfstate*
+.terraform*
+.gitignore
+*.sh
+main.0?
+main.SAVE
+variables.SAVE
+terraform.tf
+terraform.tfbackup
+archive
+gitignore_dot
+reset_git.sh
+bash_add
