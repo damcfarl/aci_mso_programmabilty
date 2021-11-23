@@ -1,0 +1,26 @@
+# This file is maintained automatically by "terraform init".
+# Manual edits may be lost in future updates.
+
+provider "registry.terraform.io/ciscodevnet/mso" {
+  version = "0.2.1"
+  hashes = [
+    "h1:pEDuZIM29XBTvTfk/fR//uBEjOATYC+FtdF/IsL++M0=",
+    "zh:0e9863d0e13c810a7ff582915c89c8d02cc998a24278ddd02c31d70dbaa1291f",
+    "zh:1a74b5a75a264716b7e523fc768ba04ca5b8624f5b4d532ddba83a70d2b457b7",
+    "zh:277277d0bad6e2345ea6939556477f9f32e135401c26c2dd0ce512afdaadb8ab",
+    "zh:32ce127a782b29394b79a0d6a25541acb8e125e5cfbf4e6ba6888d186e075250",
+    "zh:4e354bb49679675d12b3c8fcae09123e5f191e4dadaa8c5ad22add095cd9a479",
+    "zh:50f921b8cbf7898552d1106931d263d801b9d7d7ceaee73d72cc5161549490e3",
+    "zh:68014fa563686a0320aa2b585773353251f9d57d131fd35fd341ea5f31d6c583",
+    "zh:6a6ce407e6180ebb1a2db1e665a81f18ea33c7bb58f1145d3d769da5e7c3d36e",
+    "zh:703aefa09ae6f6edf701965d625c6d1d6abc73332cb2a1dc955e267a5fb58202",
+    "zh:744897e5e4429602a3575339d360e260c17027e1bce2437aa20feafdfe052c92",
+    "zh:9c163048dd2708fd85e5782564eeb9766a6aa25bcb03fccc5c2709c63508f02b",
+    "zh:9dd8ee25f33e70d884e69a7ea3e8df3d766700a9864b3e709d8d030947f251ca",
+    "zh:a5612a2903597c4d41387eac992ffe1aeaec61bf33c756cc39279173fede1206",
+    "zh:b32cb80a9c98860f2368dc5a7f8293e1a172ae0cdf375cb46e593705dc3544cb",
+    "zh:c890e9cc5e6a6f0405a085983fe67c8cc98ec7d6c9acce9414142ede334c0a4b",
+    "zh:f46185f1de74b62cb3b9da91a33ee8106f4d9aa970e4800acb0175bf5591d0e3",
+    "zh:fc64df61591d70903b11c1811c1f279a2267b12a40b15988c22c756d76dfa285",
+  ]
+}
