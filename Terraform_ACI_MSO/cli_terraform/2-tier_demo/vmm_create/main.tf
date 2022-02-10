@@ -20,7 +20,7 @@ provider "aci" {
 
 resource "aci_vmm_domain" "vmm_domain_tf" {
         provider_profile_dn = "uni/vmmp-VMware"
-        description         = var.vmm_domain
+#        description         = var.vmm_domain
         name                = var.vmm_domain
         ep_inventory_type   = "on-link"
         ep_ret_time         = "0"
