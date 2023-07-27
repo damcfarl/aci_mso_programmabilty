@@ -1,0 +1,25 @@
+---
+- name: Add interface and description to ACI
+  hosts: apic1
+  connection: local
+  gather_facts: false
+
+
+  vars_files:
+    - external_varsATX.yml
+
+  tasks:
+    - name: Associate an Interface Access Port Selector to an Interface Policy Leaf Profile with a Policy Group
+      cisco.aci.aci_access_port_to_interface_policy_leaf_profile:
+        host: "{{ host }}"
+        username: "{{ user }}"
+        password: "{{ password }}"
+        validate_certs: "{{ validate_certs  }}"
+        interface_profile: Lf104_IntProf
+        access_port_selector: Eth1-36
+        port_blk: leaf104
+        from_port: 36
+        to_port: 36
+        policy_group: dm_vpc_L103-35_L104-36
+        state: present
+      delegate_to: localhost
